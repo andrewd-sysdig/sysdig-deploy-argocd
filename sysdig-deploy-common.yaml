@@ -1,5 +1,7 @@
 global:
   sysdig:
+    clusterConfig:
+      name: update-me-with-env-specific
     accessKeySecret: sysdig-agent
     secureAPITokenSecret: sysdig-agent-api-token
     region: au1
@@ -14,6 +16,7 @@ agent: # Sysdig-Agent provides Runtime Security, Activity Audit, Drift Detection
     settings:
       feature:
         mode: secure # Set agent mode to secure only (disable monitor)
+      tags: cluster:update-me-with-env-specific,environment:non-prod
     log: 
       file_priority: info # Leave file logging in pod at info for support issues using: kubectl cp <agent-pod>:/opt/draios/logs <dest> -n <namespace>
       console_priority: warning # Reduce console loging to save on log storage/noise
