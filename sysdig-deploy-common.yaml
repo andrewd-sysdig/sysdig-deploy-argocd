@@ -1,0 +1,51 @@
+global:
+  sysdig:
+    accessKeySecret: sysdig-agent
+    secureAPITokenSecret: sysdig-agent-api-token
+    region: au1
+  kspm:
+      deploy: true # Enables KSPM, ie benchmarks for Kubernetes & Hosts
+    
+agent: # Sysdig-Agent provides Runtime Security, Activity Audit, Drift Detection, Image Profiling etc...
+  enabled: true 
+  priorityClassName: system-node-critical # Optional but recommended for sysdig-agent only as can help when deploying/upgrading to make sure it's not stuck in pending
+  resourceProfile: small # See https://github.com/sysdiglabs/charts/tree/master/charts/agent#resource-profiles
+  sysdig:
+    settings:
+      feature:
+        mode: secure # Set agent mode to secure only (disable monitor)
+    log: 
+      file_priority: info # Leave file logging in pod at info for support issues using: kubectl cp <agent-pod>:/opt/draios/logs <dest> -n <namespace>
+      console_priority: warning # Reduce console loging to save on log storage/noise
+      app_checks_enabled: false # explicitly disable app checks
+      jmx:
+        enabled: false # explicitly disable jmx metric collection
+      prometheus:
+        enabled: false # explicitly disable prometheus metric scraping
+      statsd:
+        enabled: false # explicitly disable statsd metric collection
+      event_labels:
+        include:
+          - kubernetes.namespace.label.CostCentre
+          - kubernetes.namespace.label.SupportGroup
+          - kubernetes.namespace.label.ProductName
+          - kubernetes.namespace.label.ProductOwner
+
+nodeAnalyzer: # Node Analyzer is a daemonset that containrs pods for analyzing things on the node such as host and conatiner vulnerabilities 
+  enabled: true 
+  nodeAnalyzer:
+    secure:
+      vulnerabilityManagement:
+        newEngineOnly: true # New Runtime Scanner & New Host Scanner
+    runtimeScanner:
+      settings:
+        eveEnabled: true # Risk Spotlight
+    benchmarkRunner:
+      deploy: false # Old benchmark runner - replaced by KSPM
+
+admissionController:
+  enabled: true # Used for Kubernetes Audit Log Threat Detection
+  scanner:
+    enabled: false # Don't need on deployment scanning enforcement (legacy engine)
+  webhook:
+    hostNetwork: false # Set this to true if using a custom CNI where the managed control plane nodes are unable to initiate network connections to the pods
