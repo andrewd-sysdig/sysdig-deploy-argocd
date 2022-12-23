@@ -1,4 +1,4 @@
-# sysdig-deploy-values
+# sysdig-deploy-argocd
 
 Requires ArgoCD 2.6.0+ for the new feature that allows values.yaml to come from a different repo than the chart
 
