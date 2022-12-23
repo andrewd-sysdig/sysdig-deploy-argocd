@@ -1,0 +1,8 @@
+global:
+  sysdig:
+    clusterConfig:
+      name: lab2
+    
+agent: # Sysdig-Agent provides Runtime Security, Activity Audit, Drift Detection, Image Profiling etc...
+  sysdig:
+      tags: cluster:lab2,environment:non-prod
